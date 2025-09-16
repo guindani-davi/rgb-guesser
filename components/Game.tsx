@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { IGameState } from "@/models/GameState";
+import { IGameState } from "@/models/GameState"
 import { MainMenu } from "@/components/GameStates/MainMenu";
 
 export default function Game() {
@@ -8,7 +8,6 @@ export default function Game() {
     new MainMenu(() => {})
   );
 
-  // quando o componente montar, injetamos o setGameState real
   useEffect(() => {
     setGameState(new MainMenu(setGameState));
   }, []);
