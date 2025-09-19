@@ -1,16 +1,12 @@
 import { ColorChannel } from "@/models/ColorChannel";
 import { Matrix } from "@/models/Matrix";
 
-function rgbClamp(value: number): number {
-	return Math.max(0, Math.min(255, Math.round(value)));
-}
-
 function checkValidColorChannel(colorChannel: ColorChannel): boolean {
 	return (
 		colorChannel.getValue().length === 3 &&
 		colorChannel
 			.getValue()
-			.every((v) => Number.isInteger(v) && v >= 0 && v <= 255)
+			.every((v) => Number.isInteger(v) && v >= 0 && v <= 9)
 	);
 }
 
@@ -54,4 +50,4 @@ function shuffleMatrix(matrix: Matrix): Matrix {
 	return new Matrix(shuffledR, shuffledG, shuffledB);
 }
 
-export { rgbClamp, checkValidColorChannel, checkValidMatrix, shuffleMatrix };
+export { checkValidColorChannel, checkValidMatrix, shuffleMatrix };
