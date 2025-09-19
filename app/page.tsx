@@ -8,23 +8,9 @@ export default function Game() {
     new MainMenu(() => {})
   );
 
-  // quando o componente montar, injetamos o setGameState real
   useEffect(() => {
     setGameState(new MainMenu(setGameState));
   }, []);
 
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const loop = () => {
-      gameState.tick();
-      animationFrameId = requestAnimationFrame(loop);
-    };
-
-    loop();
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [gameState]);
-
-  return <div>{gameState.getView()}</div>;
+  return <div>{gameState.render()}</div>;
 }

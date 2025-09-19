@@ -5,17 +5,14 @@ import { Playing } from "@/components/GameStates/Playing";
 export class MainMenu implements IGameState {
   constructor(private setGameState: (state: IGameState) => void) {}
 
-  tick(): void {
-  }
-
-  getView(): JSX.Element {
+  render(): JSX.Element {
     return (
-      <div>
-        <h1>Main Menu</h1>
+      <>
+        <h1>RGB Guesser</h1>
         <button onClick={() => this.setGameState(new Playing(this.setGameState))}>
-          Start Game
+          Play
         </button>
-      </div>
+      </>
     );
   }
 }

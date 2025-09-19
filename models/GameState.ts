@@ -1,8 +1,7 @@
 import type { JSX } from "react";
 
 interface IGameState {
-	tick(): void;
-	getView(): JSX.Element;
+	render(): JSX.Element;
 }
 
 export type { IGameState };
