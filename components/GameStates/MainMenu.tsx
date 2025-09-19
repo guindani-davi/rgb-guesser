@@ -7,12 +7,21 @@ export class MainMenu implements IGameState {
 
   render(): JSX.Element {
     return (
-      <>
-        <h1>RGB Guesser</h1>
-        <button onClick={() => this.setGameState(new Playing(this.setGameState))}>
-          Play
-        </button>
-      </>
+      <section className="hero is-fullheight">
+        <div className="hero-body">
+          <div className="container has-text-centered">
+            <h1 className="title is-1 mb-6">
+              RGB Guesser
+            </h1>
+            <button 
+              className="button is-primary is-large"
+              onClick={() => this.setGameState(new Playing(this.setGameState))}
+            >
+              Play
+            </button>
+          </div>
+        </div>
+      </section>
     );
   }
 }
