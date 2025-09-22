@@ -17,7 +17,7 @@ export class MainMenu implements IGameState {
               className="button is-primary is-large"
               onClick={() => this.setGameState(new Playing(this.setGameState))}
             >
-              Play
+              Jogar
             </button>
           </div>
         </div>

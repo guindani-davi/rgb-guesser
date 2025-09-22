@@ -1,4 +1,4 @@
-import type { ColorChannel } from "@/models/ColorChannel";
+import { ColorChannel } from "@/models/ColorChannel";
 import { checkValidColorChannel } from "@/models/Helper";
 
 class Matrix {
@@ -48,6 +48,46 @@ class Matrix {
 		this.setR(matrix[0]);
 		this.setG(matrix[1]);
 		this.setB(matrix[2]);
+	}
+
+	public getValue(row: number, col: number): number {
+		if (row < 0 || row > 2 || col < 0 || col > 2) {
+			throw new Error("Invalid position");
+		}
+		
+		const channels = [this.r, this.g, this.b];
+		return channels[row].getValue()[col];
+	}
+
+	public setValue(row: number, col: number, value: number): void {
+		if (row < 0 || row > 2 || col < 0 || col > 2) {
+			throw new Error("Invalid position");
+		}
+		if (value < 0 || value > 9) {
+			throw new Error("Invalid value");
+		}
+		
+		const currentValues = row === 0 ? this.r.getValue() : row === 1 ? this.g.getValue() : this.b.getValue();
+		const newValues: [number, number, number] = [...currentValues];
+		newValues[col] = value;
+		
+		const newChannel = new ColorChannel(newValues);
+		
+		if (row === 0) {
+			this.setR(newChannel);
+		} else if (row === 1) {
+			this.setG(newChannel);
+		} else {
+			this.setB(newChannel);
+		}
+	}
+
+	public swapValues(row1: number, col1: number, row2: number, col2: number): void {
+		const value1 = this.getValue(row1, col1);
+		const value2 = this.getValue(row2, col2);
+		
+		this.setValue(row1, col1, value2);
+		this.setValue(row2, col2, value1);
 	}
 }
 
