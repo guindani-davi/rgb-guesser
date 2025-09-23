@@ -16,30 +16,30 @@ interface MatrixCellProps {
 	isSelected: boolean;
 	isAdjacent: boolean;
 	onClick: () => void;
-	channelColor: string;
 }
 
 function MatrixCell({
 	value,
 	isSelected,
 	isAdjacent,
-	onClick,
-	channelColor
+	onClick
 }: MatrixCellProps): JSX.Element {
-	const getCellStyle = () => {
+	const getCellClasses = () => {
+		let classes = "has-text-centered is-size-4";
+
 		if (isSelected) {
-			return { backgroundColor: '#48c774', cursor: 'pointer' };
+			classes += " has-background-success has-text-white";
+		} else if (isAdjacent) {
+			classes += " has-background-warning has-text-dark";
 		}
-		if (isAdjacent) {
-			return { backgroundColor: '#ffdd57', cursor: 'pointer' };
-		}
-		return { cursor: 'pointer' };
+
+		return classes;
 	};
 
 	return (
 		<td
-			className={`has-text-centered is-size-4 has-text-${channelColor}`}
-			style={getCellStyle()}
+			className={getCellClasses()}
+			style={{ cursor: 'pointer' }}
 			onClick={onClick}
 		>
 			{value}
@@ -105,7 +105,6 @@ export function MatrixGrid({
 						isSelected={isSelected}
 						isAdjacent={isAdjacent}
 						onClick={() => onCellClick(position)}
-						channelColor={channelColor}
 					/>
 				);
 			})}
