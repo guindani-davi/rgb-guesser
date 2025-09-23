@@ -1,7 +1,4 @@
-import type { JSX } from "react";
-
-interface IGameState {
-	render(): JSX.Element;
-}
-
-export type { IGameState };
+export type {
+	GameStateTransition,
+	IGameState,
+} from "@/models/GameStateManager";

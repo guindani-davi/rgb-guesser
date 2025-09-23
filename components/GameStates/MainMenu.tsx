@@ -1,27 +1,44 @@
-import { JSX } from "react";
-import { IGameState } from "@/models/GameState"
+import type { JSX } from "react";
+import type { IGameState, GameStateTransition } from "@/models/GameState";
 import { Playing } from "@/components/GameStates/Playing";
 
-export class MainMenu implements IGameState {
-  constructor(private setGameState: (state: IGameState) => void) {}
+interface MainMenuProps {
+	onStartGame: () => void;
+}
 
-  render(): JSX.Element {
-    return (
-      <section className="hero is-fullheight">
-        <div className="hero-body">
-          <div className="container has-text-centered">
-            <h1 className="title is-1 mb-6">
-              RGB Guesser
-            </h1>
-            <button 
-              className="button is-primary is-large"
-              onClick={() => this.setGameState(new Playing(this.setGameState))}
-            >
-              Jogar
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
+function MainMenuComponent({ onStartGame }: MainMenuProps): JSX.Element {
+	return (
+		<section className="hero is-fullheight">
+			<div className="hero-body">
+				<div className="container has-text-centered">
+					<h1 className="title is-1 mb-6">
+						RGB Guesser
+					</h1>
+					<button
+						className="button is-primary is-large"
+						onClick={onStartGame}
+						type="button"
+					>
+						Jogar
+					</button>
+				</div>
+			</div>
+		</section>
+	);
+}
+
+export class MainMenu implements IGameState {
+	constructor(private transitionTo: GameStateTransition) {}
+
+	getStateName(): string {
+		return "MainMenu";
+	}
+
+	render(): JSX.Element {
+		return (
+			<MainMenuComponent
+				onStartGame={() => this.transitionTo(new Playing(this.transitionTo))}
+			/>
+		);
+	}
 }

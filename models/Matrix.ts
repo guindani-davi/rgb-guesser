@@ -1,94 +1,113 @@
-import { ColorChannel } from "@/models/ColorChannel";
-import { checkValidColorChannel } from "@/models/Helper";
+import { ColorChannel, type ColorChannelValue } from "@/models/ColorChannel";
+import { PositionError } from "@/models/Errors";
+
+type Position = {
+	readonly row: number;
+	readonly col: number;
+};
+
+type RGBChannels = readonly [ColorChannel, ColorChannel, ColorChannel];
 
 class Matrix {
-	private r: ColorChannel;
-	private g: ColorChannel;
-	private b: ColorChannel;
+	private readonly _channels: RGBChannels;
 
 	constructor(r: ColorChannel, g: ColorChannel, b: ColorChannel) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
+		this._channels = [r, g, b] as const;
 	}
 
-	private setR(r: ColorChannel): void {
-		this.r = r;
+	public static fromChannels(channels: RGBChannels): Matrix {
+		return new Matrix(channels[0], channels[1], channels[2]);
 	}
 
-	private setG(g: ColorChannel): void {
-		this.g = g;
+	public static fromValues(
+		rValues: ColorChannelValue,
+		gValues: ColorChannelValue,
+		bValues: ColorChannelValue,
+	): Matrix {
+		return new Matrix(
+			new ColorChannel(rValues),
+			new ColorChannel(gValues),
+			new ColorChannel(bValues),
+		);
 	}
 
-	private setB(b: ColorChannel): void {
-		this.b = b;
-	}
+	private validatePosition(position: Position): void {
+		const { row, col } = position;
 
-	private getR(): ColorChannel {
-		return this.r;
-	}
-
-	private getG(): ColorChannel {
-		return this.g;
-	}
-
-	private getB(): ColorChannel {
-		return this.b;
-	}
-
-	public getRGB(): [ColorChannel, ColorChannel, ColorChannel] {
-		return [this.getR(), this.getG(), this.getB()];
-	}
-
-	public setRGB(matrix: [ColorChannel, ColorChannel, ColorChannel]): void {
-		if (!matrix.every(checkValidColorChannel)) {
-			throw new Error("Invalid ColorChannel in matrix");
+		if (!Number.isInteger(row) || !Number.isInteger(col)) {
+			throw new PositionError(
+				`Position coordinates must be integers: row=${row}, col=${col}`,
+				position,
+			);
 		}
 
-		this.setR(matrix[0]);
-		this.setG(matrix[1]);
-		this.setB(matrix[2]);
-	}
-
-	public getValue(row: number, col: number): number {
 		if (row < 0 || row > 2 || col < 0 || col > 2) {
-			throw new Error("Invalid position");
-		}
-		
-		const channels = [this.r, this.g, this.b];
-		return channels[row].getValue()[col];
-	}
-
-	public setValue(row: number, col: number, value: number): void {
-		if (row < 0 || row > 2 || col < 0 || col > 2) {
-			throw new Error("Invalid position");
-		}
-		if (value < 0 || value > 9) {
-			throw new Error("Invalid value");
-		}
-		
-		const currentValues = row === 0 ? this.r.getValue() : row === 1 ? this.g.getValue() : this.b.getValue();
-		const newValues: [number, number, number] = [...currentValues];
-		newValues[col] = value;
-		
-		const newChannel = new ColorChannel(newValues);
-		
-		if (row === 0) {
-			this.setR(newChannel);
-		} else if (row === 1) {
-			this.setG(newChannel);
-		} else {
-			this.setB(newChannel);
+			throw new PositionError(
+				`Position coordinates must be between 0 and 2: row=${row}, col=${col}`,
+				position,
+			);
 		}
 	}
 
-	public swapValues(row1: number, col1: number, row2: number, col2: number): void {
-		const value1 = this.getValue(row1, col1);
-		const value2 = this.getValue(row2, col2);
-		
-		this.setValue(row1, col1, value2);
-		this.setValue(row2, col2, value1);
+	public getChannels(): RGBChannels {
+		return [...this._channels] as RGBChannels;
+	}
+
+	public getRedChannel(): ColorChannel {
+		return this._channels[0];
+	}
+
+	public getGreenChannel(): ColorChannel {
+		return this._channels[1];
+	}
+
+	public getBlueChannel(): ColorChannel {
+		return this._channels[2];
+	}
+
+	public getValueAt(position: Position): number {
+		this.validatePosition(position);
+		return this._channels[position.row].getValueAt(position.col);
+	}
+
+	public withValueAt(position: Position, value: number): Matrix {
+		this.validatePosition(position);
+
+		const newChannels = [...this._channels] as [
+			ColorChannel,
+			ColorChannel,
+			ColorChannel,
+		];
+		newChannels[position.row] = this._channels[position.row].withValueAt(
+			position.col,
+			value,
+		);
+
+		return Matrix.fromChannels(newChannels);
+	}
+
+	public withSwappedValues(pos1: Position, pos2: Position): Matrix {
+		const value1 = this.getValueAt(pos1);
+		const value2 = this.getValueAt(pos2);
+
+		return this.withValueAt(pos1, value2).withValueAt(pos2, value1);
+	}
+
+	public toRGBColor(): string {
+		const [r, g, b] = this._channels;
+		return `rgb(${r.toRGBValue()}, ${g.toRGBValue()}, ${b.toRGBValue()})`;
+	}
+
+	public equals(other: Matrix): boolean {
+		return this._channels.every((channel, index) =>
+			channel.equals(other._channels[index]),
+		);
+	}
+
+	public getAllValues(): number[] {
+		return this._channels.flatMap((channel) => [...channel.getValue()]);
 	}
 }
 
 export { Matrix };
+export type { Position, RGBChannels };
