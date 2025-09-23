@@ -8,6 +8,7 @@ interface UseGameLogicReturn {
 	currentMatrix: Matrix;
 	selectedCell: Position | null;
 	isGameWon: boolean;
+	correctPositions: Position[];
 	handleCellClick: (position: Position) => void;
 	resetSelectedCell: () => void;
 }
@@ -19,10 +20,15 @@ export function useGameLogic(): UseGameLogicReturn {
 	);
 	const [selectedCell, setSelectedCell] = useState<Position | null>(null);
 	const [isGameWon, setIsGameWon] = useState(false);
+	const [correctPositions, setCorrectPositions] = useState<Position[]>([]);
 
 	useEffect(() => {
 		const gameWon = GameLogic.isGameWon(currentMatrix, targetMatrix);
+		const correctPositionsArray =
+			currentMatrix.getCorrectPositions(targetMatrix);
+
 		setIsGameWon(gameWon);
+		setCorrectPositions(correctPositionsArray);
 	}, [currentMatrix, targetMatrix]);
 
 	const handleCellClick = (position: Position): void => {
@@ -57,6 +63,7 @@ export function useGameLogic(): UseGameLogicReturn {
 	};
 
 	return {
+		correctPositions,
 		currentMatrix,
 		handleCellClick,
 		isGameWon,

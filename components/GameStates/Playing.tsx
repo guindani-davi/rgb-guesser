@@ -15,6 +15,7 @@ function PlayingComponent({ onGameWon }: PlayingProps): JSX.Element {
 		targetMatrix,
 		currentMatrix,
 		selectedCell,
+		correctPositions,
 		isGameWon,
 		handleCellClick,
 		resetSelectedCell,
@@ -36,6 +37,7 @@ function PlayingComponent({ onGameWon }: PlayingProps): JSX.Element {
 							<MatrixGrid
 								matrix={currentMatrix}
 								selectedCell={selectedCell}
+								correctPositions={correctPositions}
 								onCellClick={handleCellClick}
 								onClickOutside={resetSelectedCell}
 							/>

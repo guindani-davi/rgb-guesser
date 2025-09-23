@@ -107,6 +107,26 @@ class Matrix {
 	public getAllValues(): number[] {
 		return this._channels.flatMap((channel) => [...channel.getValue()]);
 	}
+
+	public isValueCorrectAt(position: Position, targetMatrix: Matrix): boolean {
+		this.validatePosition(position);
+		return this.getValueAt(position) === targetMatrix.getValueAt(position);
+	}
+
+	public getCorrectPositions(targetMatrix: Matrix): Position[] {
+		const correctPositions: Position[] = [];
+
+		for (let row = 0; row < 3; row++) {
+			for (let col = 0; col < 3; col++) {
+				const position: Position = { col, row };
+				if (this.isValueCorrectAt(position, targetMatrix)) {
+					correctPositions.push(position);
+				}
+			}
+		}
+
+		return correctPositions;
+	}
 }
 
 export { Matrix };

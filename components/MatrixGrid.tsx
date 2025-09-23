@@ -6,6 +6,7 @@ import { GameLogic } from "@/models/GameLogic";
 interface MatrixGridProps {
 	matrix: Matrix;
 	selectedCell: Position | null;
+	correctPositions: Position[];
 	onCellClick: (position: Position) => void;
 	onClickOutside: () => void;
 }
@@ -15,6 +16,7 @@ interface MatrixCellProps {
 	position: Position;
 	isSelected: boolean;
 	isAdjacent: boolean;
+	isCorrect: boolean;
 	onClick: () => void;
 }
 
@@ -22,6 +24,7 @@ function MatrixCell({
 	value,
 	isSelected,
 	isAdjacent,
+	isCorrect,
 	onClick
 }: MatrixCellProps): JSX.Element {
 	const getCellClasses = () => {
@@ -31,6 +34,8 @@ function MatrixCell({
 			classes += " has-background-success has-text-white";
 		} else if (isAdjacent) {
 			classes += " has-background-warning has-text-dark";
+		} else if (isCorrect) {
+			classes += " has-background-primary-light has-text-primary-dark";
 		}
 
 		return classes;
@@ -50,6 +55,7 @@ function MatrixCell({
 export function MatrixGrid({
 	matrix,
 	selectedCell,
+	correctPositions,
 	onCellClick,
 	onClickOutside
 }: MatrixGridProps): JSX.Element {
@@ -77,6 +83,12 @@ export function MatrixGrid({
 		);
 	};
 
+	const isPositionCorrect = (position: Position): boolean => {
+		return correctPositions.some(
+			pos => pos.row === position.row && pos.col === position.col
+		);
+	};
+
 	const adjacentPositions = getAdjacentPositions(selectedCell);
 
 	const renderChannelRow = (
@@ -96,6 +108,7 @@ export function MatrixGrid({
 				const position: Position = { row: rowIndex, col: colIndex };
 				const isSelected = selectedCell?.row === rowIndex && selectedCell?.col === colIndex;
 				const isAdjacent = isPositionAdjacent(position, adjacentPositions);
+				const isCorrect = isPositionCorrect(position);
 
 				return (
 					<MatrixCell
@@ -104,6 +117,7 @@ export function MatrixGrid({
 						position={position}
 						isSelected={isSelected}
 						isAdjacent={isAdjacent}
+						isCorrect={isCorrect}
 						onClick={() => onCellClick(position)}
 					/>
 				);
