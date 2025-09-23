@@ -155,7 +155,7 @@ export function PlayingComponent({ setGameState }: PlayingProps): JSX.Element {
             <div className="column is-narrow">
               <div className="box">
                 <div className="mb-5">
-                  <p className="has-text-centered mb-2 is-size-5">Current Color</p>
+                  <p className="has-text-centered mb-2 is-size-5">Cor Atual</p>
                   <div 
                     style={{
                       width: '150px',
@@ -167,7 +167,7 @@ export function PlayingComponent({ setGameState }: PlayingProps): JSX.Element {
                   />
                 </div>
                 <div>
-                  <p className="has-text-centered mb-2 is-size-5">Target Color</p>
+                  <p className="has-text-centered mb-2 is-size-5">Cor Alvo</p>
                   <div 
                     style={{
                       width: '150px',
