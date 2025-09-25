@@ -1,4 +1,4 @@
-import 'bulma/css/bulma.min.css';
+import "bulma/css/bulma.min.css";
 
 export default function RootLayout({
   children,

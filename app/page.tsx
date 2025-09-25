@@ -3,11 +3,7 @@ import React from "react";
 import { useGameStateManager } from "@/hooks/useGameStateManager";
 
 export default function Game() {
-	const { gameStateManager } = useGameStateManager();
+  const { gameStateManager } = useGameStateManager();
 
-	return (
-		<div>
-			{gameStateManager.render()}
-		</div>
-	);
+  return <div>{gameStateManager.render()}</div>;
 }

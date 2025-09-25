@@ -1,4 +1,4 @@
 export type {
-	GameStateTransition,
-	IGameState,
+  GameStateTransition,
+  IGameState,
 } from "@/models/GameStateManager";

@@ -4,136 +4,154 @@ import { Matrix, type Position } from "@/models/Matrix";
 import { GameLogic } from "@/models/GameLogic";
 
 interface MatrixGridProps {
-	matrix: Matrix;
-	selectedCell: Position | null;
-	correctPositions: Position[];
-	onCellClick: (position: Position) => void;
-	onClickOutside: () => void;
+  matrix: Matrix;
+  selectedCell: Position | null;
+  correctPositions: Position[];
+  onCellClick: (position: Position) => void;
+  onClickOutside: () => void;
 }
 
 interface MatrixCellProps {
-	value: number;
-	position: Position;
-	isSelected: boolean;
-	isAdjacent: boolean;
-	isCorrect: boolean;
-	onClick: () => void;
+  value: number;
+  position: Position;
+  isSelected: boolean;
+  isAdjacent: boolean;
+  isCorrect: boolean;
+  onClick: () => void;
 }
 
 function MatrixCell({
-	value,
-	isSelected,
-	isAdjacent,
-	isCorrect,
-	onClick
+  value,
+  isSelected,
+  isAdjacent,
+  isCorrect,
+  onClick,
 }: MatrixCellProps): JSX.Element {
-	const getCellClasses = () => {
-		let classes = "has-text-centered is-size-4";
+  const getCellClasses = () => {
+    let classes = "has-text-centered is-size-3-mobile is-size-4-tablet is-size-3-desktop";
 
-		if (isSelected) {
-			classes += " has-background-success has-text-white";
-		} else if (isAdjacent) {
-			classes += " has-background-warning has-text-dark";
-		} else if (isCorrect) {
-			classes += " has-background-primary-light has-text-primary-dark";
-		}
+    if (isSelected) {
+      classes += " has-background-success has-text-white";
+    } else if (isAdjacent) {
+      classes += " has-background-warning has-text-dark";
+    } else if (isCorrect) {
+      classes += " has-background-primary-light has-text-primary-dark";
+    }
 
-		return classes;
-	};
+    return classes;
+  };
 
-	return (
-		<td
-			className={getCellClasses()}
-			style={{ cursor: 'pointer' }}
-			onClick={onClick}
-		>
-			{value}
-		</td>
-	);
+  return (
+    <td
+      className={getCellClasses()}
+      style={{
+        cursor: "pointer",
+        padding: "16px 12px",
+        minWidth: "60px",
+        height: "60px"
+      }}
+      onClick={onClick}
+    >
+      {value}
+    </td>
+  );
 }
 
 export function MatrixGrid({
-	matrix,
-	selectedCell,
-	correctPositions,
-	onCellClick,
-	onClickOutside
+  matrix,
+  selectedCell,
+  correctPositions,
+  onCellClick,
+  onClickOutside,
 }: MatrixGridProps): JSX.Element {
-	const matrixRef = useRef<HTMLTableElement>(null);
-	const [rChannel, gChannel, bChannel] = matrix.getChannels();
+  const matrixRef = useRef<HTMLTableElement>(null);
+  const [rChannel, gChannel, bChannel] = matrix.getChannels();
 
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (matrixRef.current && !matrixRef.current.contains(event.target as Node)) {
-				onClickOutside();
-			}
-		};
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        matrixRef.current &&
+        !matrixRef.current.contains(event.target as Node)
+      ) {
+        onClickOutside();
+      }
+    };
 
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [onClickOutside]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClickOutside]);
 
-	const getAdjacentPositions = (position: Position | null): Position[] => {
-		return position ? GameLogic.getAdjacentPositions(position) : [];
-	};
+  const getAdjacentPositions = (position: Position | null): Position[] => {
+    return position ? GameLogic.getAdjacentPositions(position) : [];
+  };
 
-	const isPositionAdjacent = (position: Position, adjacentPositions: Position[]): boolean => {
-		return adjacentPositions.some(
-			pos => pos.row === position.row && pos.col === position.col
-		);
-	};
+  const isPositionAdjacent = (
+    position: Position,
+    adjacentPositions: Position[]
+  ): boolean => {
+    return adjacentPositions.some(
+      (pos) => pos.row === position.row && pos.col === position.col
+    );
+  };
 
-	const isPositionCorrect = (position: Position): boolean => {
-		return correctPositions.some(
-			pos => pos.row === position.row && pos.col === position.col
-		);
-	};
+  const isPositionCorrect = (position: Position): boolean => {
+    return correctPositions.some(
+      (pos) => pos.row === position.row && pos.col === position.col
+    );
+  };
 
-	const adjacentPositions = getAdjacentPositions(selectedCell);
+  const adjacentPositions = getAdjacentPositions(selectedCell);
 
-	const renderChannelRow = (
-		channelName: string,
-		channelValues: number[],
-		rowIndex: number,
-		channelColor: string
-	): JSX.Element => (
-		<tr key={channelName}>
-			<th
-				className={`has-text-centered has-text-${channelColor} is-size-4`}
-				style={{ width: '50px' }}
-			>
-				{channelName}
-			</th>
-			{channelValues.map((value, colIndex) => {
-				const position: Position = { row: rowIndex, col: colIndex };
-				const isSelected = selectedCell?.row === rowIndex && selectedCell?.col === colIndex;
-				const isAdjacent = isPositionAdjacent(position, adjacentPositions);
-				const isCorrect = isPositionCorrect(position);
+  const renderChannelRow = (
+    channelName: string,
+    channelValues: number[],
+    rowIndex: number,
+    channelColor: string
+  ): JSX.Element => (
+    <tr key={channelName}>
+      <th
+        className={`has-text-centered has-text-${channelColor} is-size-3-mobile is-size-4-tablet is-size-3-desktop`}
+        style={{
+          width: "60px",
+          padding: "16px 12px",
+          fontWeight: "bold"
+        }}
+      >
+        {channelName}
+      </th>
+      {channelValues.map((value, colIndex) => {
+        const position: Position = { row: rowIndex, col: colIndex };
+        const isSelected =
+          selectedCell?.row === rowIndex && selectedCell?.col === colIndex;
+        const isAdjacent = isPositionAdjacent(position, adjacentPositions);
+        const isCorrect = isPositionCorrect(position);
 
-				return (
-					<MatrixCell
-						key={`${channelName}-${colIndex}`}
-						value={value}
-						position={position}
-						isSelected={isSelected}
-						isAdjacent={isAdjacent}
-						isCorrect={isCorrect}
-						onClick={() => onCellClick(position)}
-					/>
-				);
-			})}
-		</tr>
-	);
+        return (
+          <MatrixCell
+            key={`${channelName}-${colIndex}`}
+            value={value}
+            position={position}
+            isSelected={isSelected}
+            isAdjacent={isAdjacent}
+            isCorrect={isCorrect}
+            onClick={() => onCellClick(position)}
+          />
+        );
+      })}
+    </tr>
+  );
 
-	return (
-		<div className="box">
-			<table ref={matrixRef} className="table is-bordered">
-				<tbody>
-					{renderChannelRow("R", [...rChannel.getValue()], 0, "danger")}
-					{renderChannelRow("G", [...gChannel.getValue()], 1, "success")}
-					{renderChannelRow("B", [...bChannel.getValue()], 2, "info")}
-				</tbody>
-			</table>
-		</div>
-	);
+  return (
+    <div className="box">
+      <div className="table-container">
+        <table ref={matrixRef} className="table is-bordered is-fullwidth">
+          <tbody>
+            {renderChannelRow("R", [...rChannel.getValue()], 0, "danger")}
+            {renderChannelRow("G", [...gChannel.getValue()], 1, "success")}
+            {renderChannelRow("B", [...bChannel.getValue()], 2, "info")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
