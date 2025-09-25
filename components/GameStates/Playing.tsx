@@ -32,40 +32,43 @@ function PlayingComponent({ onGameWon }: PlayingProps): JSX.Element {
   }, [isGameWon, onGameWon]);
 
   return (
-    <section className="hero is-fullheight">
+    <div className="hero">
       <div className="hero-body">
-        <div className="container">
-          <h1 className="title is-3-mobile is-2-tablet has-text-centered mb-4">
-            RGB Matrix
-          </h1>
-
-          <div className="columns is-centered is-vcentered mb-4 is-multiline">
-            <div className="column is-narrow-tablet is-full-mobile">
-              <MatrixGrid
-                matrix={currentMatrix}
-                selectedCell={selectedCell}
-                correctPositions={correctPositions}
-                onCellClick={handleCellClick}
-                onClickOutside={resetSelectedCell}
-              />
-            </div>
-            <div className="column is-narrow-tablet is-full-mobile">
-              <ColorDisplay
-                currentMatrix={currentMatrix}
-                targetMatrix={targetMatrix}
-              />
+        <div className="columns">
+          <div className="column is-3"></div>
+          <div className="column is-6">
+            <div className="container has-text-centered">
+              <p className="title">RGB Guesser</p>
+              <div className="columns">
+                <div className="column is-half is-offset-one-quarter">
+                  <MatrixGrid
+                    matrix={currentMatrix}
+                    selectedCell={selectedCell}
+                    correctPositions={correctPositions}
+                    onCellClick={handleCellClick}
+                    onClickOutside={resetSelectedCell}
+                  ></MatrixGrid>
+                </div>
+              </div>
+              <div className="columns">
+                <div className="column is-half is-offset-one-quarter">
+                  <ColorDisplay
+                    currentMatrix={currentMatrix}
+                    targetMatrix={targetMatrix}
+                  ></ColorDisplay>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Painel de Ajuda - Layout Inferior */}
-          <div className="columns is-centered">
-            <div className="column is-two-thirds-desktop is-full-tablet is-full-mobile">
-              <HelpPanel isVisible={isHelpVisible} onToggle={toggleHelp} />
-            </div>
+          <div className="column">
+            <HelpPanel
+              isVisible={isHelpVisible}
+              onToggle={toggleHelp}
+            ></HelpPanel>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

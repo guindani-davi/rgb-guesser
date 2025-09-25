@@ -14,11 +14,13 @@ interface ColorBoxProps {
 function ColorBox({ color, label }: ColorBoxProps): JSX.Element {
   return (
     <div className="mb-4">
-      <p className="has-text-centered mb-2 is-size-6-mobile is-size-5-tablet is-size-5-desktop">{label}</p>
+      <p className="has-text-centered mb-2 is-size-6-mobile is-size-5-tablet is-size-5-desktop">
+        {label}
+      </p>
       <div
         style={{
           width: "100%",
-          maxWidth: "200px",
+          maxWidth: "150px",
           height: "150px",
           backgroundColor: color,
           border: "1px solid #dbdbdb",
@@ -38,27 +40,15 @@ export function ColorDisplay({
   const targetColor = targetMatrix.toRGBColor();
 
   return (
-    <>
-      <style>
-        {`
-          @media screen and (min-width: 1024px) {
-            .color-display-desktop {
-              min-height: 380px;
-              padding: 1.5rem !important;
-            }
-          }
-        `}
-      </style>
-      <div className="box color-display-desktop">
-        <div className="columns is-mobile is-gapless">
-          <div className="column">
-            <ColorBox color={currentColor} label="Cor Atual" />
-          </div>
-          <div className="column">
-            <ColorBox color={targetColor} label="Cor Alvo" />
-          </div>
+    <div className="box">
+      <div className="columns is-mobile">
+        <div className="column">
+          <ColorBox color={currentColor} label="Cor Atual" />
+        </div>
+        <div className="column">
+          <ColorBox color={targetColor} label="Cor Alvo" />
         </div>
       </div>
-    </>
+    </div>
   );
 }

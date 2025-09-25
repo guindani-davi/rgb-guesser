@@ -28,7 +28,8 @@ function MatrixCell({
   onClick,
 }: MatrixCellProps): JSX.Element {
   const getCellClasses = () => {
-    let classes = "has-text-centered is-size-3-mobile is-size-4-tablet is-size-3-desktop";
+    let classes =
+      "has-text-centered is-size-3-mobile is-size-4-tablet is-size-3-desktop";
 
     if (isSelected) {
       classes += " has-background-success has-text-white";
@@ -48,7 +49,7 @@ function MatrixCell({
         cursor: "pointer",
         padding: "16px 12px",
         minWidth: "60px",
-        height: "60px"
+        height: "60px",
       }}
       onClick={onClick}
     >
@@ -114,7 +115,7 @@ export function MatrixGrid({
         style={{
           width: "60px",
           padding: "16px 12px",
-          fontWeight: "bold"
+          fontWeight: "bold",
         }}
       >
         {channelName}
