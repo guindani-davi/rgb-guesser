@@ -139,6 +139,29 @@ export function HelpPanel({
             </p>
           </div>
 
+          <div className="mb-5">
+            <h4 className="title is-6 has-text-success mb-3">
+              🏆 Sistema de Pontuação
+            </h4>
+            <div className="space-y-3">
+              <GameTip
+                icon="⏱️"
+                title="Pontuação por Tempo"
+                description="Você começa com 90 pontos e perde 1 ponto a cada segundo. O mínimo é 0 pontos."
+              />
+              <GameTip
+                icon="🔄"
+                title="Pontuação por Movimentos"
+                description="Você começa com 200 pontos e perde 10 pontos a cada movimento (troca de células). O mínimo é 0 pontos."
+              />
+              <GameTip
+                icon="🎯"
+                title="Pontuação Global"
+                description="Sua pontuação final é a soma da pontuação por tempo e por movimentos. A pontuação máxima possível é 290 pontos!"
+              />
+            </div>
+          </div>
+
           <div>
             <h4 className="title is-6 has-text-info mb-3">
               📚 Recursos Educacionais

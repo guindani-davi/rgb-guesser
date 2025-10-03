@@ -2,15 +2,19 @@ import type { JSX } from "react";
 import type { IGameState, GameStateTransition } from "@/models/GameState";
 import { MainMenu } from "@/components/GameStates/MainMenu";
 import { GlobalScoreSystem } from "@/models/GlobalScoreSystem";
+import type { Matrix } from "@/models/Matrix";
+import { MatrixSolution } from "@/components/MatrixSolution";
 
 interface GameWonProps {
   onBackToMenu: () => void;
   finalScore: number;
+  targetMatrix: Matrix;
 }
 
 function GameWonComponent({
   onBackToMenu,
   finalScore,
+  targetMatrix,
 }: GameWonProps): JSX.Element {
   const scoreMessage = GlobalScoreSystem.getScoreMessage(finalScore);
 
@@ -50,7 +54,9 @@ function GameWonComponent({
                 </p>
               </div>
 
-              <div className="buttons is-centered">
+              <MatrixSolution matrix={targetMatrix} />
+
+              <div className="buttons is-centered mt-5">
                 <button
                   className="button is-primary is-large is-rounded"
                   onClick={onBackToMenu}
@@ -73,7 +79,8 @@ function GameWonComponent({
 export class GameWon implements IGameState {
   constructor(
     private transitionTo: GameStateTransition,
-    private finalScore: number
+    private finalScore: number,
+    private targetMatrix: Matrix
   ) {}
 
   getStateName(): string {
@@ -85,6 +92,7 @@ export class GameWon implements IGameState {
       <GameWonComponent
         onBackToMenu={() => this.transitionTo(new MainMenu(this.transitionTo))}
         finalScore={this.finalScore}
+        targetMatrix={this.targetMatrix}
       />
     );
   }

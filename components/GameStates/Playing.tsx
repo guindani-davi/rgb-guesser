@@ -14,8 +14,10 @@ import { useScoreSystem } from "@/hooks/useScoreSystem";
 import { useMovementScoreSystem } from "@/hooks/useMovementScoreSystem";
 import { useGlobalScoreSystem } from "@/hooks/useGlobalScoreSystem";
 
+import type { Matrix } from "@/models/Matrix";
+
 interface PlayingProps {
-  onGameWon: (finalScore: number) => void;
+  onGameWon: (finalScore: number, targetMatrix: Matrix) => void;
 }
 
 function PlayingComponent({ onGameWon }: PlayingProps): JSX.Element {
@@ -46,9 +48,9 @@ function PlayingComponent({ onGameWon }: PlayingProps): JSX.Element {
   useEffect(() => {
     if (isGameWon) {
       finalize();
-      onGameWon(globalScore);
+      onGameWon(globalScore, targetMatrix);
     }
-  }, [isGameWon, onGameWon, globalScore, finalize]);
+  }, [isGameWon, onGameWon, globalScore, targetMatrix, finalize]);
 
   return (
     <div className="hero">
@@ -111,8 +113,10 @@ export class Playing implements IGameState {
   render(): JSX.Element {
     return (
       <PlayingComponent
-        onGameWon={(finalScore: number) =>
-          this.transitionTo(new GameWon(this.transitionTo, finalScore))
+        onGameWon={(finalScore: number, targetMatrix: Matrix) =>
+          this.transitionTo(
+            new GameWon(this.transitionTo, finalScore, targetMatrix)
+          )
         }
       />
     );
