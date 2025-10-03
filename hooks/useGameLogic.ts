@@ -11,9 +11,17 @@ interface UseGameLogicReturn {
   correctPositions: Position[];
   handleCellClick: (position: Position) => void;
   resetSelectedCell: () => void;
+  onMovementMade?: () => void;
 }
 
-export function useGameLogic(): UseGameLogicReturn {
+interface UseGameLogicProps {
+  onMovementMade?: () => void;
+}
+
+export function useGameLogic(
+  props: UseGameLogicProps = {}
+): UseGameLogicReturn {
+  const { onMovementMade } = props;
   const [targetMatrix] = useState(() => MatrixFactory.createRandomMatrix());
   const [currentMatrix, setCurrentMatrix] = useState(() =>
     GameLogic.createShuffledMatrix(targetMatrix)
@@ -50,6 +58,7 @@ export function useGameLogic(): UseGameLogicReturn {
         );
         setCurrentMatrix(newMatrix);
         setSelectedCell(null);
+        onMovementMade?.();
       } else {
         setSelectedCell(null);
       }

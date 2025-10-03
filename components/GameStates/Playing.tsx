@@ -5,14 +5,26 @@ import { GameWon } from "@/components/GameStates/GameWon";
 import { MatrixGrid } from "@/components/MatrixGrid";
 import { ColorDisplay } from "@/components/ColorDisplay";
 import { HelpPanel } from "@/components/HelpPanel";
+import { ScoreDisplay } from "@/components/ScoreDisplay";
+import { MovementScoreDisplay } from "@/components/MovementScoreDisplay";
+import { GlobalScoreDisplay } from "@/components/GlobalScoreDisplay";
 import { useGameLogic } from "@/hooks/useGameLogic";
 import { useHelpPanel } from "@/hooks/useHelpPanel";
+import { useScoreSystem } from "@/hooks/useScoreSystem";
+import { useMovementScoreSystem } from "@/hooks/useMovementScoreSystem";
+import { useGlobalScoreSystem } from "@/hooks/useGlobalScoreSystem";
 
 interface PlayingProps {
-  onGameWon: () => void;
+  onGameWon: (finalScore: number) => void;
 }
 
 function PlayingComponent({ onGameWon }: PlayingProps): JSX.Element {
+  const {
+    currentScore: movementScore,
+    movementCount,
+    recordMovement,
+  } = useMovementScoreSystem();
+
   const {
     targetMatrix,
     currentMatrix,
@@ -21,21 +33,38 @@ function PlayingComponent({ onGameWon }: PlayingProps): JSX.Element {
     isGameWon,
     handleCellClick,
     resetSelectedCell,
-  } = useGameLogic();
+  } = useGameLogic({ onMovementMade: recordMovement });
 
   const { isHelpVisible, toggleHelp } = useHelpPanel(true);
+  const { currentScore, elapsedSeconds, finalize } = useScoreSystem();
+
+  const { globalScore } = useGlobalScoreSystem({
+    timeScore: currentScore,
+    movementScore,
+  });
 
   useEffect(() => {
     if (isGameWon) {
-      onGameWon();
+      finalize();
+      onGameWon(globalScore);
     }
-  }, [isGameWon, onGameWon]);
+  }, [isGameWon, onGameWon, globalScore, finalize]);
 
   return (
     <div className="hero">
       <div className="hero-body">
         <div className="columns">
-          <div className="column is-3"></div>
+          <div className="column">
+            <GlobalScoreDisplay globalScore={globalScore}></GlobalScoreDisplay>
+            <ScoreDisplay
+              currentScore={currentScore}
+              elapsedSeconds={elapsedSeconds}
+            ></ScoreDisplay>
+            <MovementScoreDisplay
+              currentScore={movementScore}
+              movementCount={movementCount}
+            ></MovementScoreDisplay>
+          </div>
           <div className="column is-6">
             <div className="container has-text-centered">
               <p className="title">RGB Guesser</p>
@@ -82,7 +111,9 @@ export class Playing implements IGameState {
   render(): JSX.Element {
     return (
       <PlayingComponent
-        onGameWon={() => this.transitionTo(new GameWon(this.transitionTo))}
+        onGameWon={(finalScore: number) =>
+          this.transitionTo(new GameWon(this.transitionTo, finalScore))
+        }
       />
     );
   }
